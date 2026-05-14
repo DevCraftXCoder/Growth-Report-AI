@@ -2,25 +2,13 @@
 
 ![Next.js](https://img.shields.io/badge/Next.js_15-000000?style=flat&logo=nextdotjs&logoColor=white)
 ![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=flat&logo=typescript&logoColor=white)
-![Anthropic](https://img.shields.io/badge/Anthropic_Claude-D97706?style=flat&logo=anthropic&logoColor=white)
+![AI Powered](https://img.shields.io/badge/AI_Powered-D97706?style=flat&logo=anthropic&logoColor=white)
 ![Cloudflare](https://img.shields.io/badge/Cloudflare-F38020?style=flat&logo=cloudflare&logoColor=white)
 ![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)
 
 **AI-powered growth analytics dashboard. Real-time platform metrics, historical trends, and streaming AI-generated growth insights.**
 
-> A full-stack analytics dashboard that combines real-time platform metrics with Claude-generated narrative reports. Engineered for speed — sub-2s dashboard load, sub-500ms queries — with streaming AI insights that arrive progressively.
-
----
-
-## Table of Contents
-
-- [Architecture](#architecture)
-- [Tech Stack](#tech-stack)
-- [Features](#features)
-- [Security](#security)
-- [Key Engineering Decisions](#key-engineering-decisions)
-- [AI Report API](#ai-report-api)
-- [Running This](#running-this)
+> A full-stack analytics dashboard that combines real-time platform metrics with AI-generated narrative reports. Engineered for speed — sub-2s dashboard load, sub-500ms queries — with streaming AI insights that arrive progressively.
 
 ---
 
@@ -40,9 +28,9 @@ Next.js 15  (App Router · SSR · streaming)
         ├── GET /api/growth/metrics       → aggregated platform stats
         ├── GET /api/growth/historical    → time-series query (cursor-paginated)
         ├── GET /api/growth/compare       → period-over-period comparison
-        └── POST /api/growth/ai-report    → Claude API streaming report
+        └── POST /api/growth/ai-report    → AI streaming report
               │
-              └── Anthropic SDK (claude-sonnet-4-6)  ←  prompt cache (5-min TTL)
+              └── AI SDK (LLM)  ←  prompt cache (5-min TTL)
 ```
 
 ---
@@ -53,8 +41,8 @@ Next.js 15  (App Router · SSR · streaming)
 |---|---|---|
 | Frontend | Next.js 15, App Router, React Server Components | Zero JS on initial render for above-the-fold |
 | Charts | Recharts / D3 | Client-hydrated only after initial RSC render |
-| AI | Anthropic Claude API (streaming) | `claude-sonnet-4-6`, SSE |
-| Caching | Anthropic prompt caching + application TTL cache | 5-min prompt cache, 30s hot-read cache |
+| AI | LLM API (streaming) | SSE |
+| Caching | LLM prompt caching + application TTL cache | 5-min prompt cache, 30s hot-read cache |
 | API | Next.js API Routes | Edge runtime |
 | Validation | Zod | All API payloads |
 
@@ -90,8 +78,8 @@ Next.js 15  (App Router · SSR · streaming)
 ## Security
 
 ### API Key Handling
-- Anthropic API credentials are server-side environment variables — never exposed to client JavaScript or included in client bundles.
-- Edge runtime API routes — API credentials exist only in the Cloudflare Workers execution context, not in any client-accessible resource.
+- AI credentials are server-side environment variables — never exposed to client JavaScript or included in client bundles.
+- Edge runtime API routes — credentials exist only in the Cloudflare Workers execution context, not in any client-accessible resource.
 
 ### Prompt Injection Prevention
 - User-controlled strings (metric labels, time ranges) are passed to AI as **structured data** with strict user/system role separation.
@@ -105,7 +93,7 @@ Next.js 15  (App Router · SSR · streaming)
 ### Data Handling
 - Metric ownership validated on every API request — users can only query their own data.
 - No raw SQL in the API layer — parameterized queries only.
-- No user data transmitted to Anthropic beyond the explicitly constructed report context.
+- No user data transmitted to the AI provider beyond the explicitly constructed report context.
 
 ---
 
@@ -115,7 +103,7 @@ Next.js 15  (App Router · SSR · streaming)
 AI report generation uses Server-Sent Events (SSE) to stream tokens progressively. The dashboard is usable while the AI generates the narrative. First token in ~300ms; full report in 4–8 seconds.
 
 ### Prompt caching for repeat runs
-Metrics context is passed as a cached prefix to the Anthropic API. A second run on the same data hits the cache — ~5× faster and ~80% cheaper. Cache TTL is 5 minutes.
+Metrics context is passed as a cached prefix to the AI API. A second run on the same data hits the cache — ~5× faster and ~80% cheaper. Cache TTL is 5 minutes.
 
 ### Separate query paths for real-time vs. historical
 Real-time metrics use a hot read path (application-level cache, 30s TTL). Historical time-series uses a cursor-paginated cold path with no cache — avoids cache pollution from infrequently accessed historical data.
@@ -148,20 +136,10 @@ Response: `text/event-stream` — tokens streamed as `data: <token>` events.
 
 ---
 
-## Running This
-
-```bash
-npm install
-
-npm run dev        # dev server
-npm run build      # production build
-npm run typecheck  # tsc --noEmit
-```
-
-See `.env.example` for required environment variables (`ANTHROPIC_API_KEY`).
-
----
-
 ## License
 
 MIT — see [LICENSE](LICENSE)
+
+---
+
+*Built by Frxncois — not open source.*
