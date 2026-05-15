@@ -1,0 +1,13 @@
+name = "growth-report-ai"
+compatibility_date = "2024-09-23"
+compatibility_flags = ["nodejs_compat"]
+main = ".open-next/worker.js"
+
+[assets]
+directory = ".open-next/assets"
+binding = "ASSETS"
+
+[vars]
+# Non-secret runtime vars — secrets go in .dev.vars (local) or wrangler secret put (prod)
+# NEXT_PUBLIC_FRXNCOIS_API is set here only if you want a public default;
+# otherwise set it in .dev.vars for local dev or via the Cloudflare dashboard for prod.

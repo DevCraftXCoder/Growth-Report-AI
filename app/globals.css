@@ -1,0 +1,65 @@
+@import 'tailwindcss';
+@import '../styles/growth-design.css';
+
+@source "../components/**/*.{ts,tsx}";
+@source "../app/**/*.{ts,tsx}";
+@source "../lib/**/*.{ts,tsx}";
+
+@theme {
+  /* Map CSS vars to Tailwind theme tokens */
+  --color-bg:             #07070A;
+  --color-panel:          #0F1117;
+  --color-card:           #12141C;
+  --color-border:         rgba(255, 255, 255, 0.06);
+  --color-border-hi:      rgba(255, 255, 255, 0.10);
+
+  --color-text-primary:   #FFFFFF;
+  --color-text-secondary: #A1A1AA;
+  --color-text-muted:     #71717A;
+
+  --color-accent-purple:  #7C3AED;
+  --color-accent-pink:    #EC4899;
+
+  --color-success:        #22C55E;
+  --color-danger:         #EF4444;
+  --color-warn:           #F59E0B;
+  --color-info:           #3B82F6;
+
+  --font-sans: 'Inter', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+
+  --radius-sm: 8px;
+  --radius-md: 16px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
+}
+
+/* Base resets */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  color-scheme: dark;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+/* Reduced-motion override */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
