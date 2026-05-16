@@ -57,6 +57,14 @@
   .pulse-glow { animation: none; }
 }
 
+@keyframes hero-glow {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-glow-orb { animation: none !important; }
+}
+
 /* Sticky sidebar */
 .wizard-sticky-sidebar {
   position: sticky;
