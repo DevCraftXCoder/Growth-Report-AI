@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import type { BriefState } from '@/lib/wizard/use-wizard-state';
 import { useIndustryAccent } from '@/lib/wizard/use-industry-accent';
+import { LiveChart } from './LiveChart';
 
 interface LivePreviewProps {
   brief: BriefState;
@@ -111,15 +112,21 @@ export function LivePreview({ brief }: LivePreviewProps) {
             >
               {header}
             </p>
-            {/* Placeholder lines */}
-            <div
-              className="skeleton"
-              style={{ height: 8, width: '100%', marginBottom: 4 }}
-            />
-            <div
-              className="skeleton"
-              style={{ height: 8, width: '75%' }}
-            />
+            {header === 'Growth Metrics' ? (
+              <LiveChart height={120} />
+            ) : (
+              <>
+                {/* Placeholder lines */}
+                <div
+                  className="skeleton"
+                  style={{ height: 8, width: '100%', marginBottom: 4 }}
+                />
+                <div
+                  className="skeleton"
+                  style={{ height: 8, width: '75%' }}
+                />
+              </>
+            )}
           </div>
         ))}
       </div>

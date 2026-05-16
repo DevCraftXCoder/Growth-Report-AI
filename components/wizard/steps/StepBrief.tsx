@@ -292,6 +292,7 @@ export function StepBrief() {
             disabled={!canProceed}
             onClick={() => canProceed && setStep('template')}
             style={buttonStyle}
+            className="step-brief-next-btn"
           >
             Next: Choose Template
             <span aria-hidden="true">→</span>
@@ -315,6 +316,10 @@ export function StepBrief() {
           }
           .step-brief-preview {
             display: none !important;
+          }
+          .step-brief-next-btn {
+            width: 100% !important;
+            justify-content: center !important;
           }
         }
       `}</style>

@@ -12,6 +12,8 @@ import '@/styles/wizard.css';
 import { StepBrief } from './steps/StepBrief';
 import { StepTemplate } from './steps/StepTemplate';
 import { StepGenerate } from './steps/StepGenerate';
+import { AIAssistantFab } from './AIAssistantFab';
+import { WizardOnboardingTour } from './WizardOnboardingTour';
 
 export function WizardShell() {
   const { state, setStep } = useWizardState();
@@ -33,6 +35,7 @@ export function WizardShell() {
       }}
     >
       <WizardStepper currentStep={state.step} />
+      <WizardOnboardingTour />
 
       <div style={{ display: 'flex', gap: 24, marginTop: 32 }}>
         <main style={{ flex: 1, minWidth: 0 }}>
@@ -78,6 +81,7 @@ export function WizardShell() {
           </motion.div>
         )}
       </AnimatePresence>
+      <AIAssistantFab />
     </>
   );
 }
