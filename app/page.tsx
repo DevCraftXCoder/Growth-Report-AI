@@ -2,130 +2,28 @@
 
 import * as React from 'react';
 import Link from 'next/link';
-import { TrendingUp, BarChart3, FileText } from 'lucide-react';
-import {
-  motion,
-  useInView,
-  useMotionValue,
-  animate,
-  type Variants,
-} from 'framer-motion';
-import Logo from '@/components/growth/Logo';
-import GradientButton from '@/components/growth/GradientButton';
+import { motion } from 'framer-motion';
+import { TrendingUp, FileText, Shuffle } from 'lucide-react';
 import { LiveChart } from '@/components/wizard/LiveChart';
 import { useReducedMotion } from '@/lib/wizard/reduced-motion';
 
-// ---------------------------------------------------------------------------
-// Animated count-up stat
-// ---------------------------------------------------------------------------
-
-interface StatItem {
-  raw: number;
-  display: (v: number) => string;
-  label: string;
-}
-
-const STATS: StatItem[] = [
-  {
-    raw: 12400,
-    display: (v) => `${(v / 1000).toFixed(1)}K`,
-    label: 'avg followers tracked',
-  },
-  {
-    raw: 8.4,
-    display: (v) => `${v.toFixed(1)}%`,
-    label: 'engagement rate',
-  },
-  {
-    raw: 48700,
-    display: (v) => `${(v / 1000).toFixed(1)}K`,
-    label: 'monthly plays analyzed',
-  },
+const SKELETON_SECTIONS = [
+  'Executive Summary',
+  'Market Position',
+  'Revenue Trends',
+  'Audience Insights',
+  'Channel Performance',
+  'Competitor Analysis',
 ];
 
-function AnimatedStat({ item }: { item: StatItem }) {
-  const reduced = useReducedMotion();
-  const ref = React.useRef<HTMLSpanElement>(null);
-  const inView = useInView(ref, { once: true, margin: '-60px' });
-  const motionVal = useMotionValue(0);
-  const [display, setDisplay] = React.useState(item.display(0));
-
-  React.useEffect(() => {
-    if (!inView) return;
-    if (reduced) {
-      setDisplay(item.display(item.raw));
-      return;
-    }
-    const controls = animate(motionVal, item.raw, {
-      duration: 2,
-      ease: 'easeOut',
-      onUpdate: (v) => setDisplay(item.display(v)),
-    });
-    return () => controls.stop();
-  }, [inView, reduced, item, motionVal]);
-
-  return (
-    <span
-      ref={ref}
-      style={{
-        fontSize: 22,
-        fontWeight: 800,
-        background: 'linear-gradient(135deg, #7C3AED 0%, #EC4899 100%)',
-        WebkitBackgroundClip: 'text',
-        WebkitTextFillColor: 'transparent',
-        backgroundClip: 'text',
-        fontFamily: 'var(--font-mono, monospace)',
-        letterSpacing: '-0.02em',
-      }}
-    >
-      {display}
-    </span>
-  );
-}
-
-// ---------------------------------------------------------------------------
-// Feature cards data
-// ---------------------------------------------------------------------------
-
-const FEATURES = [
-  {
-    icon: 'trending' as const,
-    title: 'AI Growth Insights',
-    description:
-      'Get personalized recommendations generated from your actual data. Know your next move before competitors do.',
-  },
-  {
-    icon: 'bar' as const,
-    title: 'Multi-Platform Tracking',
-    description:
-      'Spotify, Apple Music, YouTube, TikTok and more — all aggregated into a single real-time view.',
-  },
-  {
-    icon: 'file' as const,
-    title: 'Actionable Reports',
-    description:
-      'Shareable PDF reports with AI-written summaries, graded performance scores, and clear next steps.',
-  },
-] as const;
-
-// ---------------------------------------------------------------------------
-// Page
-// ---------------------------------------------------------------------------
+const PROOF_PILLS = [
+  { icon: <TrendingUp size={12} aria-hidden="true" />, label: '10K+ reports generated', delay: 0.1 },
+  { icon: <FileText size={12} aria-hidden="true" />, label: '15 sections', delay: 0.22 },
+  { icon: <Shuffle size={12} aria-hidden="true" />, label: '60-second turnaround', delay: 0.34 },
+];
 
 export default function LandingPage() {
   const reduced = useReducedMotion();
-
-  const cardVariants: Variants = {
-    rest: { y: 0, boxShadow: '0 2px 8px rgba(0,0,0,0.2)' },
-    hover: reduced
-      ? {}
-      : { y: -4, boxShadow: '0 8px 32px rgba(124,58,237,0.18)' },
-  };
-
-  const iconVariants: Variants = {
-    rest: { scale: 1 },
-    hover: reduced ? {} : { scale: 1.1 },
-  };
 
   return (
     <div
@@ -137,575 +35,394 @@ export default function LandingPage() {
         position: 'relative',
       }}
     >
-      {/* ------------------------------------------------------------------ */}
-      {/* 3. Floating glow background layer (CSS-only, no canvas)             */}
-      {/* ------------------------------------------------------------------ */}
+      {/* Ambient glow background */}
       <div
         aria-hidden
         style={{
           position: 'fixed',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
+          inset: 0,
           pointerEvents: 'none',
           zIndex: 0,
           background:
-            'radial-gradient(ellipse 80% 50% at 50% -20%, rgba(124,58,237,0.18) 0%, transparent 70%),' +
-            'radial-gradient(ellipse 60% 40% at 80% 80%, rgba(236,72,153,0.10) 0%, transparent 60%)',
+            'radial-gradient(ellipse 80% 50% at 50% -20%, rgba(124,58,237,0.22) 0%, transparent 70%),' +
+            'radial-gradient(ellipse 60% 40% at 80% 80%, rgba(236,72,153,0.12) 0%, transparent 60%)',
         }}
       />
 
-      {/* All page content sits above the glow layer */}
-      <div style={{ position: 'relative', zIndex: 1 }}>
-        {/* ---------------------------------------------------------------- */}
-        {/* Nav                                                              */}
-        {/* ---------------------------------------------------------------- */}
-        <nav
-          style={{
-            position: 'sticky',
-            top: 0,
-            zIndex: 50,
-            borderBottom: '1px solid rgba(255,255,255,0.06)',
-            background: 'rgba(7,7,10,0.85)',
-            backdropFilter: 'blur(12px)',
-            WebkitBackdropFilter: 'blur(12px)',
-          }}
-        >
-          <div
-            style={{
-              maxWidth: 1120,
-              margin: '0 auto',
-              padding: '0 1.5rem',
-              height: 60,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-            }}
-          >
-            <Logo size={28} />
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-              <Link
-                href="/login"
-                style={{
-                  fontSize: 14,
-                  fontWeight: 500,
-                  color: '#A1A1AA',
-                  textDecoration: 'none',
-                  padding: '0.4rem 0.75rem',
-                  borderRadius: 8,
-                }}
-              >
-                Sign In
-              </Link>
-              <Link href="/new" style={{ textDecoration: 'none' }}>
-                <GradientButton size="sm">Get Started</GradientButton>
-              </Link>
-            </div>
-          </div>
-        </nav>
-
-        {/* ---------------------------------------------------------------- */}
-        {/* Hero                                                             */}
-        {/* ---------------------------------------------------------------- */}
-        <section
+      {/* Nav */}
+      <nav
+        style={{
+          position: 'sticky',
+          top: 0,
+          zIndex: 50,
+          borderBottom: '1px solid rgba(255,255,255,0.06)',
+          background: 'rgba(7,7,10,0.85)',
+          backdropFilter: 'blur(12px)',
+          WebkitBackdropFilter: 'blur(12px)',
+        }}
+      >
+        <div
           style={{
             maxWidth: 1120,
             margin: '0 auto',
-            /* 10. mobile responsive — desktop default */
-            padding: 'clamp(3rem, 5vw, 6rem) 1.5rem 5rem',
-            textAlign: 'center',
-            position: 'relative',
-            overflow: 'visible',
+            padding: '0 1.5rem',
+            height: 60,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
           }}
         >
-          {/* 7. Dynamic gradient lighting orb */}
-          <div
-            className="hero-glow-orb"
-            aria-hidden
-            style={{
-              position: 'absolute',
-              top: -80,
-              left: '50%',
-              transform: 'translateX(-50%)',
-              width: 600,
-              height: 200,
-              background: 'radial-gradient(ellipse, rgba(124,58,237,0.25), transparent 70%)',
-              filter: 'blur(40px)',
-              animation: reduced ? 'none' : 'hero-glow 4s ease-in-out infinite',
-              pointerEvents: 'none',
-            }}
-          />
-
-          {/* Eyebrow pill */}
-          <div
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '0.5rem',
-              padding: '0.35rem 0.85rem',
-              borderRadius: 999,
-              border: '1px solid rgba(124,58,237,0.35)',
-              background: 'rgba(124,58,237,0.08)',
-              marginBottom: '1.75rem',
-            }}
-          >
-            <div
+          <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: 10, textDecoration: 'none' }}>
+            <img src="/images/growth-report-ai-logo.png" alt="" width={28} height={28} style={{ display: 'block' }} />
+            <span style={{ fontFamily: 'Syne, sans-serif', fontWeight: 700, fontSize: 15, color: '#fff', letterSpacing: '-0.01em' }}>
+              Growth Report AI
+            </span>
+          </Link>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+            <Link href="/login" style={{ fontSize: 14, fontWeight: 500, color: '#A1A1AA', textDecoration: 'none', padding: '0.4rem 0.75rem', borderRadius: 8 }}>
+              Sign In
+            </Link>
+            <Link
+              href="/new"
               style={{
-                width: 6,
-                height: 6,
-                borderRadius: '50%',
-                background: 'linear-gradient(135deg, #7C3AED, #EC4899)',
-              }}
-            />
-            <span
-              style={{
-                fontSize: 12,
+                fontSize: 14,
                 fontWeight: 600,
-                color: '#A78BFA',
-                letterSpacing: '0.05em',
-                textTransform: 'uppercase',
+                color: '#fff',
+                textDecoration: 'none',
+                padding: '0.5rem 1rem',
+                borderRadius: 10,
+                background: 'linear-gradient(135deg, #7C3AED 0%, #EC4899 100%)',
+                boxShadow: '0 0 16px rgba(124,58,237,0.35)',
               }}
             >
-              AI-Powered Growth Analytics
+              Get Started
+            </Link>
+          </div>
+        </div>
+      </nav>
+
+      {/* Hero — mirrors MizzyTools PanelGrowthReport idle hero */}
+      <section
+        style={{
+          position: 'relative',
+          zIndex: 1,
+          maxWidth: 900,
+          margin: '0 auto',
+          padding: '48px 32px 80px',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          textAlign: 'center',
+          boxSizing: 'border-box',
+        }}
+      >
+        {/* Logo */}
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, ease: 'easeOut' }}
+          style={{ marginBottom: 32 }}
+        >
+          <img
+            src="/images/growth-report-ai-logo.png"
+            alt="Growth Report AI"
+            width={120}
+            height={120}
+            style={{ display: 'block', filter: 'drop-shadow(0 0 24px rgba(236,72,153,0.45)) drop-shadow(0 0 48px rgba(124,58,237,0.35))' }}
+            draggable={false}
+          />
+        </motion.div>
+
+        {/* Headline */}
+        <motion.h1
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.08, ease: 'easeOut' }}
+          style={{
+            fontFamily: 'Syne, sans-serif',
+            fontSize: 'clamp(36px, 6vw, 64px)',
+            fontWeight: 800,
+            letterSpacing: '-0.02em',
+            lineHeight: 1.05,
+            margin: '0 0 20px',
+            background: 'linear-gradient(135deg, #ffffff 0%, #EC4899 40%, #A78BFA 80%, #7C3AED 100%)',
+            WebkitBackgroundClip: 'text',
+            backgroundClip: 'text',
+            color: 'transparent',
+          }}
+        >
+          Growth Report AI
+        </motion.h1>
+
+        {/* Subtitle */}
+        <motion.p
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.16, ease: 'easeOut' }}
+          style={{
+            fontFamily: 'DM Sans, sans-serif',
+            fontSize: 19,
+            fontWeight: 400,
+            color: 'rgba(255,255,255,0.65)',
+            maxWidth: 580,
+            lineHeight: 1.6,
+            margin: '0 0 28px',
+          }}
+        >
+          Turn 5 inputs into a 15-section growth blueprint &mdash;
+          <br />
+          benchmarks, audit, and strategy generated in 60 seconds.
+        </motion.p>
+
+        {/* Proof chips */}
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: 10,
+            flexWrap: 'wrap',
+            marginBottom: 28,
+          }}
+        >
+          {PROOF_PILLS.map(({ icon, label, delay }) => (
+            <motion.span
+              key={label}
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay, ease: 'easeOut' }}
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 6,
+                padding: '6px 14px',
+                fontFamily: 'DM Sans, sans-serif',
+                fontSize: 12,
+                fontWeight: 500,
+                color: 'rgba(255,255,255,0.7)',
+                background: 'rgba(255,255,255,0.04)',
+                border: '1px solid rgba(255,255,255,0.08)',
+                borderRadius: 9999,
+              }}
+            >
+              {icon}
+              {label}
+            </motion.span>
+          ))}
+        </div>
+
+        {/* Growth Trajectory chart card */}
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.32, ease: 'easeOut' }}
+          style={{
+            width: '100%',
+            maxWidth: 600,
+            margin: '0 auto 20px',
+            padding: '14px 16px 8px',
+            borderRadius: 16,
+            background: 'rgba(255,255,255,0.02)',
+            border: '1px solid rgba(255,255,255,0.06)',
+            boxShadow: '0 0 60px rgba(236,72,153,0.15), 0 0 120px rgba(124,58,237,0.12), 0 16px 48px rgba(0,0,0,0.5)',
+          }}
+        >
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingBottom: 4 }}>
+            <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.35)' }}>
+              Growth Trajectory
             </span>
           </div>
+          <LiveChart height={148} />
+        </motion.div>
 
-          {/* Headline */}
-          <h1
-            style={{
-              fontSize: 'clamp(2.5rem, 6vw, 4.5rem)',
-              fontWeight: 800,
-              lineHeight: 1.08,
-              letterSpacing: '-0.03em',
-              marginBottom: '1.5rem',
-              color: '#FFFFFF',
-            }}
-          >
-            Turn Your Streams Into{' '}
-            <span
-              style={{
-                background: 'linear-gradient(135deg, #7C3AED 0%, #EC4899 100%)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                backgroundClip: 'text',
-              }}
-            >
-              Strategy.
-            </span>
-          </h1>
-
-          {/* Sub-copy */}
-          <p
-            style={{
-              fontSize: 'clamp(1rem, 2vw, 1.2rem)',
-              color: '#71717A',
-              lineHeight: 1.7,
-              maxWidth: 540,
-              margin: '0 auto 2rem',
-            }}
-          >
-            Know exactly what&apos;s working &mdash; and what isn&apos;t &mdash; across every
-            platform, powered by AI.
-          </p>
-
-          {/* 4. Animated chart preview */}
+        {/* "15 sections in 60 seconds" timeline card */}
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.45, delay: 0.42, ease: 'easeOut' }}
+          style={{ width: '100%' }}
+        >
           <div
-            className="glass-panel"
+            aria-label="Report sections preview"
             style={{
-              maxWidth: 600,
-              margin: '0 auto 2rem',
-              padding: '1.25rem 1rem 0.75rem',
-              height: 200,
               display: 'flex',
               flexDirection: 'column',
-              gap: 8,
+              alignItems: 'center',
+              gap: 10,
+              margin: '0 auto',
+              padding: '16px 20px',
+              background: 'rgba(255,255,255,0.03)',
+              border: '1px solid rgba(255,255,255,0.07)',
+              borderRadius: 14,
+              maxWidth: 480,
+              width: '100%',
+              backdropFilter: 'blur(8px)',
+              WebkitBackdropFilter: 'blur(8px)',
+              boxSizing: 'border-box',
             }}
           >
-            <div
-              style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                paddingBottom: 4,
-              }}
-            >
-              <span style={{ fontSize: 11, color: '#71717A', fontWeight: 500 }}>
-                Monthly Streams
-              </span>
-              <span
-                style={{
-                  fontSize: 11,
-                  color: '#22C55E',
-                  fontWeight: 600,
-                  background: 'rgba(34,197,94,0.1)',
-                  padding: '2px 8px',
-                  borderRadius: 999,
-                }}
-              >
-                +34.2%
+            <p style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.35)', margin: 0 }}>
+              15 sections in 60 seconds
+            </p>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, justifyContent: 'center' }}>
+              {SKELETON_SECTIONS.map((s, i) => (
+                <span
+                  key={s}
+                  style={{
+                    fontSize: 11,
+                    color: 'rgba(255,255,255,0.55)',
+                    background: 'rgba(255,255,255,0.05)',
+                    border: '1px solid rgba(255,255,255,0.08)',
+                    borderRadius: 6,
+                    padding: '3px 8px',
+                    whiteSpace: 'nowrap',
+                  }}
+                >
+                  {i + 1}. {s}
+                </span>
+              ))}
+              <span style={{ fontSize: 11, color: '#e94560', fontWeight: 600, alignSelf: 'center' }}>
+                + 9 more sections →
               </span>
             </div>
-            <LiveChart height={148} />
           </div>
+        </motion.div>
 
-          {/* 1. Fixed hero CTAs */}
-          <div
-            style={{
-              display: 'flex',
-              gap: '0.75rem',
-              justifyContent: 'center',
-              flexWrap: 'wrap',
-            }}
-          >
-            <Link href="/new" style={{ textDecoration: 'none' }}>
-              <GradientButton size="lg">Generate Free Report</GradientButton>
-            </Link>
-            <Link href="/reports" style={{ textDecoration: 'none' }}>
-              <GradientButton variant="secondary" size="lg">
-                View Reports
-              </GradientButton>
-            </Link>
-          </div>
-
-          {/* 8. Trust metric badge */}
-          <div
+        {/* Glowing CTA */}
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.45, delay: 0.52, ease: 'easeOut' }}
+          style={{ marginTop: 28 }}
+        >
+          <Link
+            href="/new"
             style={{
               display: 'inline-flex',
               alignItems: 'center',
-              gap: '0.5rem',
-              marginTop: '1.25rem',
-              fontSize: 12,
-              color: '#52525B',
+              gap: 8,
+              padding: '14px 32px',
+              fontFamily: 'DM Sans, sans-serif',
+              fontSize: 16,
+              fontWeight: 600,
+              color: '#ffffff',
+              background: 'linear-gradient(135deg, #7C3AED 0%, #EC4899 100%)',
+              border: 'none',
+              borderRadius: 14,
+              textDecoration: 'none',
+              boxShadow: '0 0 32px rgba(124,58,237,0.55), 0 0 64px rgba(236,72,153,0.35)',
+              animation: reduced ? 'none' : 'gr-cta-pulse 3s ease-in-out infinite',
+              transition: 'transform 0.18s ease-out, filter 0.18s ease-out',
             }}
           >
-            <div
-              aria-hidden
-              style={{
-                width: 6,
-                height: 6,
-                borderRadius: '50%',
-                background: '#22C55E',
-                flexShrink: 0,
-              }}
+            Generate Report
+          </Link>
+        </motion.div>
+
+        {/* Animated dashboard preview — bar chart + trend line */}
+        <div
+          aria-hidden
+          style={{
+            width: '100%',
+            maxWidth: 720,
+            margin: '36px auto 0',
+            borderRadius: 16,
+            overflow: 'hidden',
+            background: 'rgba(255,255,255,0.02)',
+            border: '1px solid rgba(255,255,255,0.06)',
+            boxShadow: '0 0 60px rgba(236,72,153,0.18), 0 0 120px rgba(124,58,237,0.15), 0 24px 64px rgba(0,0,0,0.5)',
+          }}
+        >
+          <svg
+            viewBox="0 0 720 200"
+            xmlns="http://www.w3.org/2000/svg"
+            preserveAspectRatio="xMidYMid meet"
+            style={{ width: '100%', height: 'auto', display: 'block' }}
+          >
+            <defs>
+              <linearGradient id="dash-bar-pink" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stopColor="#ff5c8a" stopOpacity="0.9" />
+                <stop offset="100%" stopColor="#e94560" stopOpacity="0.4" />
+              </linearGradient>
+              <linearGradient id="dash-bar-purple" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stopColor="#a78bfa" stopOpacity="0.85" />
+                <stop offset="100%" stopColor="#5227ff" stopOpacity="0.35" />
+              </linearGradient>
+              <linearGradient id="dash-area" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stopColor="#ff5c8a" stopOpacity="0.3" />
+                <stop offset="100%" stopColor="#ff5c8a" stopOpacity="0" />
+              </linearGradient>
+              <filter id="dash-glow" x="-20%" y="-20%" width="140%" height="140%">
+                <feGaussianBlur stdDeviation="3" result="blur" />
+                <feMerge>
+                  <feMergeNode in="blur" />
+                  <feMergeNode in="SourceGraphic" />
+                </feMerge>
+              </filter>
+            </defs>
+            <g stroke="rgba(255,255,255,0.05)" strokeWidth="1">
+              <line x1="60" y1="40" x2="660" y2="40" />
+              <line x1="60" y1="80" x2="660" y2="80" />
+              <line x1="60" y1="120" x2="660" y2="120" />
+              <line x1="60" y1="160" x2="660" y2="160" />
+            </g>
+            <g fill="rgba(255,255,255,0.25)" fontSize="11" fontFamily="JetBrains Mono, monospace" textAnchor="end">
+              <text x="52" y="44">100</text>
+              <text x="52" y="84">75</text>
+              <text x="52" y="124">50</text>
+              <text x="52" y="164">25</text>
+            </g>
+            <g fill="url(#dash-bar-purple)" filter="url(#dash-glow)">
+              <rect x="90" y="90" width="44" height="70" rx="4" />
+              <rect x="160" y="65" width="44" height="95" rx="4" />
+              <rect x="230" y="105" width="44" height="55" rx="4" />
+              <rect x="300" y="45" width="44" height="115" rx="4" />
+              <rect x="370" y="30" width="44" height="130" rx="4" />
+            </g>
+            <g fill="url(#dash-bar-pink)" filter="url(#dash-glow)">
+              <rect x="100" y="105" width="24" height="55" rx="3" />
+              <rect x="170" y="85" width="24" height="75" rx="3" />
+              <rect x="240" y="120" width="24" height="40" rx="3" />
+              <rect x="310" y="70" width="24" height="90" rx="3" />
+              <rect x="380" y="50" width="24" height="110" rx="3" />
+            </g>
+            <path
+              d="M440 145 C480 130 520 110 560 85 600 60 640 38 660 30"
+              fill="none"
+              stroke="#ff5c8a"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              filter="url(#dash-glow)"
             />
-            3 creators joined in the last hour · 98% satisfaction
-          </div>
-        </section>
+            <path
+              d="M440 145 C480 130 520 110 560 85 600 60 640 38 660 30 L660 160 L440 160 Z"
+              fill="url(#dash-area)"
+            />
+            <circle cx="660" cy="30" r="5" fill="#ff5c8a" filter="url(#dash-glow)" />
+            <g fill="rgba(255,255,255,0.25)" fontSize="11" fontFamily="JetBrains Mono, monospace" textAnchor="middle">
+              <text x="112" y="180">Jan</text>
+              <text x="182" y="180">Feb</text>
+              <text x="252" y="180">Mar</text>
+              <text x="322" y="180">Apr</text>
+              <text x="392" y="180">May</text>
+              <text x="550" y="180">Trend</text>
+            </g>
+          </svg>
+        </div>
+      </section>
 
-        {/* ---------------------------------------------------------------- */}
-        {/* 2. Social proof bar — animated count-up                          */}
-        {/* ---------------------------------------------------------------- */}
-        <section style={{ maxWidth: 1120, margin: '0 auto', padding: '0 1.5rem 5rem' }}>
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
-              gap: '1rem',
-            }}
-          >
-            {STATS.map((item) => (
-              <div
-                key={item.label}
-                style={{
-                  borderRadius: 999,
-                  border: '1px solid rgba(124,58,237,0.2)',
-                  background: 'rgba(124,58,237,0.05)',
-                  padding: '0.75rem 1.5rem',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '0.75rem',
-                  justifyContent: 'center',
-                }}
-              >
-                <AnimatedStat item={item} />
-                <span style={{ fontSize: 13, color: '#71717A', fontWeight: 500 }}>
-                  {item.label}
-                </span>
-              </div>
-            ))}
-          </div>
-        </section>
+      {/* Footer */}
+      <footer style={{ position: 'relative', zIndex: 1, borderTop: '1px solid rgba(255,255,255,0.06)', padding: '1.5rem', textAlign: 'center' }}>
+        <p style={{ fontSize: 13, color: '#3F3F46' }}>&copy; 2025 Growth Report AI. All rights reserved.</p>
+      </footer>
 
-        {/* ---------------------------------------------------------------- */}
-        {/* Features grid — 5 & 6: hover + scroll-in animations             */}
-        {/* ---------------------------------------------------------------- */}
-        <section style={{ maxWidth: 1120, margin: '0 auto', padding: '0 1.5rem 6rem' }}>
-          <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
-            <h2
-              style={{
-                fontSize: 'clamp(1.5rem, 3vw, 2.25rem)',
-                fontWeight: 700,
-                color: '#FFFFFF',
-                letterSpacing: '-0.02em',
-                marginBottom: '0.75rem',
-              }}
-            >
-              Everything you need to grow
-            </h2>
-            <p style={{ fontSize: 15, color: '#71717A', maxWidth: 420, margin: '0 auto' }}>
-              One dashboard. All your platforms. AI-generated action plans.
-            </p>
-          </div>
-
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-              gap: '1.5rem',
-            }}
-          >
-            {FEATURES.map(({ icon, title, description }, index) => (
-              /* 9. Cinematic scroll-in + 5. hover lift — two separate motion.div wrappers */
-              <motion.div
-                key={title}
-                initial={{ opacity: 0, y: 24 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: '-60px' }}
-                transition={{ duration: 0.45, delay: index * 0.1 }}
-              >
-                <motion.div
-                  variants={cardVariants}
-                  initial="rest"
-                  whileHover="hover"
-                  animate="rest"
-                  transition={{ duration: 0.2, ease: 'easeOut' }}
-                  style={{
-                    borderRadius: 16,
-                    border: '1px solid rgba(255,255,255,0.06)',
-                    background: '#0F1117',
-                    padding: '1.75rem',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '1rem',
-                    cursor: 'pointer',
-                    height: '100%',
-                  }}
-                >
-                {/* 6. Icon hover scale */}
-                <motion.div
-                  variants={iconVariants}
-                  transition={{ duration: 0.2, ease: 'easeOut' }}
-                  style={{
-                    width: 44,
-                    height: 44,
-                    borderRadius: 12,
-                    background: 'linear-gradient(135deg, #7C3AED 0%, #EC4899 100%)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    flexShrink: 0,
-                  }}
-                >
-                  {icon === 'trending' && <TrendingUp size={20} color="#FFFFFF" strokeWidth={2} />}
-                  {icon === 'bar' && <BarChart3 size={20} color="#FFFFFF" strokeWidth={2} />}
-                  {icon === 'file' && <FileText size={20} color="#FFFFFF" strokeWidth={2} />}
-                </motion.div>
-                <div>
-                  <h3
-                    style={{
-                      fontSize: 16,
-                      fontWeight: 700,
-                      color: '#FFFFFF',
-                      marginBottom: '0.4rem',
-                    }}
-                  >
-                    {title}
-                  </h3>
-                  <p style={{ fontSize: 14, color: '#71717A', lineHeight: 1.65 }}>{description}</p>
-                </div>
-                </motion.div>
-              </motion.div>
-            ))}
-          </div>
-        </section>
-
-        {/* ---------------------------------------------------------------- */}
-        {/* How it works                                                      */}
-        {/* ---------------------------------------------------------------- */}
-        <section style={{ maxWidth: 1120, margin: '0 auto', padding: '0 1.5rem 6rem' }}>
-          <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
-            <h2
-              style={{
-                fontSize: 'clamp(1.5rem, 3vw, 2.25rem)',
-                fontWeight: 700,
-                color: '#FFFFFF',
-                letterSpacing: '-0.02em',
-                marginBottom: '0.5rem',
-              }}
-            >
-              How it works
-            </h2>
-            <p style={{ fontSize: 15, color: '#71717A' }}>Up and running in under 2 minutes.</p>
-          </div>
-
-          <div
-            style={{
-              borderRadius: 20,
-              border: '1px solid rgba(255,255,255,0.06)',
-              background: 'rgba(255,255,255,0.02)',
-              backdropFilter: 'blur(8px)',
-              WebkitBackdropFilter: 'blur(8px)',
-              padding: '2rem 2.5rem',
-              maxWidth: 680,
-              margin: '0 auto',
-            }}
-          >
-            {[
-              {
-                step: 1,
-                title: 'Connect Platforms',
-                body: 'Link your Spotify, Apple Music, YouTube, TikTok, and other distribution accounts in seconds.',
-              },
-              {
-                step: 2,
-                title: 'Run AI Analysis',
-                body: 'Our AI processes your metrics, detects patterns, and benchmarks your performance against similar artists.',
-              },
-              {
-                step: 3,
-                title: 'Get Your Report',
-                body: 'Receive a full growth report with a letter grade, key findings, and a prioritized action plan.',
-              },
-            ].map(({ step, title, body }, idx) => (
-              <div key={step}>
-                <div
-                  style={{
-                    display: 'flex',
-                    gap: '1.25rem',
-                    alignItems: 'flex-start',
-                    padding: '1.25rem 0',
-                  }}
-                >
-                  <div
-                    style={{
-                      width: 32,
-                      height: 32,
-                      borderRadius: '50%',
-                      background: 'linear-gradient(135deg, #7C3AED 0%, #EC4899 100%)',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      flexShrink: 0,
-                      fontSize: 13,
-                      fontWeight: 800,
-                      color: '#FFFFFF',
-                      marginTop: 2,
-                    }}
-                  >
-                    {step}
-                  </div>
-                  <div>
-                    <h3
-                      style={{
-                        fontSize: 15,
-                        fontWeight: 700,
-                        color: '#FFFFFF',
-                        marginBottom: '0.3rem',
-                      }}
-                    >
-                      {title}
-                    </h3>
-                    <p style={{ fontSize: 14, color: '#71717A', lineHeight: 1.6 }}>{body}</p>
-                  </div>
-                </div>
-                {idx < 2 && (
-                  <div
-                    style={{
-                      height: 1,
-                      background: 'rgba(255,255,255,0.06)',
-                      marginLeft: '3.25rem',
-                    }}
-                  />
-                )}
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* ---------------------------------------------------------------- */}
-        {/* Bottom CTA section                                               */}
-        {/* ---------------------------------------------------------------- */}
-        <section
-          style={{
-            maxWidth: 1120,
-            margin: '0 auto',
-            padding: '0 1.5rem 7rem',
-            textAlign: 'center',
-          }}
-        >
-          <div
-            style={{
-              borderRadius: 24,
-              border: '1px solid rgba(124,58,237,0.25)',
-              background:
-                'linear-gradient(135deg, rgba(124,58,237,0.08) 0%, rgba(236,72,153,0.06) 100%)',
-              padding: '4rem 2rem',
-            }}
-          >
-            <h2
-              style={{
-                fontSize: 'clamp(1.75rem, 4vw, 3rem)',
-                fontWeight: 800,
-                color: '#FFFFFF',
-                letterSpacing: '-0.03em',
-                marginBottom: '1rem',
-              }}
-            >
-              Ready to grow?
-            </h2>
-            <p
-              style={{
-                fontSize: 16,
-                color: '#71717A',
-                lineHeight: 1.7,
-                maxWidth: 400,
-                margin: '0 auto 2.25rem',
-              }}
-            >
-              Join independent artists who use AI to make smarter decisions about their music
-              careers.
-            </p>
-            <Link href="/new" style={{ textDecoration: 'none' }}>
-              <GradientButton size="lg">Get Started Free</GradientButton>
-            </Link>
-          </div>
-        </section>
-
-        {/* ---------------------------------------------------------------- */}
-        {/* Footer                                                           */}
-        {/* ---------------------------------------------------------------- */}
-        <footer
-          style={{
-            borderTop: '1px solid rgba(255,255,255,0.06)',
-            padding: '1.5rem',
-            textAlign: 'center',
-          }}
-        >
-          <p style={{ fontSize: 13, color: '#3F3F46' }}>
-            &copy; 2025 Growth Report AI. All rights reserved.
-          </p>
-        </footer>
-      </div>
-
-      {/* ------------------------------------------------------------------ */}
-      {/* 10. Mobile responsive styles                                        */}
-      {/* ------------------------------------------------------------------ */}
       <style>{`
+        @keyframes gr-cta-pulse {
+          0%, 100% { box-shadow: 0 0 32px rgba(124,58,237,0.55), 0 0 64px rgba(236,72,153,0.35); }
+          50%      { box-shadow: 0 0 48px rgba(124,58,237,0.75), 0 0 96px rgba(236,72,153,0.5); }
+        }
         @media (max-width: 768px) {
-          .landing-hero-section {
-            padding: 4rem 1rem 3rem !important;
-          }
-          .landing-social-proof {
-            flex-direction: column !important;
-          }
-          .landing-features-grid {
-            grid-template-columns: 1fr !important;
-          }
-          .landing-cta-row {
-            flex-direction: column !important;
-            align-items: center;
-          }
+          section { padding-left: 1rem !important; padding-right: 1rem !important; }
         }
       `}</style>
     </div>
