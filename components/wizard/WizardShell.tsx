@@ -9,6 +9,9 @@ import { HeroIntro } from './HeroIntro';
 import { WizardStepper } from './WizardStepper';
 import { StickySidebar } from './StickySidebar';
 import '@/styles/wizard.css';
+import { StepBrief } from './steps/StepBrief';
+import { StepTemplate } from './steps/StepTemplate';
+import { StepGenerate } from './steps/StepGenerate';
 
 export function WizardShell() {
   const { state, setStep } = useWizardState();
@@ -34,12 +37,9 @@ export function WizardShell() {
       <div style={{ display: 'flex', gap: 24, marginTop: 32 }}>
         <main style={{ flex: 1, minWidth: 0 }}>
           {/* Placeholder — T3/T4/T5 will fill step content here */}
-          <div
-            className="glass-panel"
-            style={{ padding: 32, color: 'rgba(255,255,255,0.6)' }}
-          >
-            Step: {state.step}
-          </div>
+          {state.step === 'brief' && <StepBrief />}
+          {state.step === 'template' && <StepTemplate />}
+          {state.step === 'generate' && <StepGenerate />}
         </main>
         <aside
           style={{ width: 260, flexShrink: 0 }}
