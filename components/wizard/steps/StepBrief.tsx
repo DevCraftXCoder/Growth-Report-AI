@@ -2,7 +2,6 @@
 
 import { motion } from 'framer-motion';
 import { useWizardState } from '@/lib/wizard/use-wizard-state';
-import { useIndustryAccent } from '@/lib/wizard/use-industry-accent';
 import { IndustryPill, INDUSTRIES } from '@/components/wizard/IndustryPill';
 import { LivePreview } from '@/components/wizard/LivePreview';
 import '@/styles/wizard.css';
@@ -20,7 +19,6 @@ const PERIOD_OPTIONS = [
 export function StepBrief() {
   const { state, setStep, updateBrief } = useWizardState();
   const { brief } = state;
-  const accent = useIndustryAccent(brief.industry);
 
   const canProceed = brief.industry !== '';
 
