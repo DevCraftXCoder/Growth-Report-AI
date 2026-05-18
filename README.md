@@ -75,6 +75,15 @@ Next.js 15  (App Router · SSR · streaming)
 
 ---
 
+## Recent Additions
+
+- **Landing page hero** — ported MizzyTools 'Growth Report AI' hero with logo, proof chips, 15-section feature card, and dashboard preview
+- **Comprehensive UI overhaul** — animated KPI counters, live chart preview, particle glow background, hover animations, cinematic scroll effects, trust badge, mobile-first responsive layout
+- **6-step wizard** — T3–T6 fully wired (StepBrief, StepTemplate, StepGenerate, AI fab + onboarding tour), mobile-optimized with animated chart preview
+- **CF Workers integration** — defineCloudflareConfig for edge runtime alignment with francois-landing pattern
+
+---
+
 ## Security
 
 ### API Key Handling
