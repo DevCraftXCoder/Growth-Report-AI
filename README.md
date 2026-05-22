@@ -2,153 +2,54 @@
 
 ![Next.js](https://img.shields.io/badge/Next.js_15-000000?style=flat&logo=nextdotjs&logoColor=white)
 ![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=flat&logo=typescript&logoColor=white)
-![AI Powered](https://img.shields.io/badge/AI_Powered-D97706?style=flat&logo=anthropic&logoColor=white)
-![Cloudflare](https://img.shields.io/badge/Cloudflare-F38020?style=flat&logo=cloudflare&logoColor=white)
-![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)
+![AI Powered](https://img.shields.io/badge/LLM_Powered-D97706?style=flat&logo=anthropic&logoColor=white)
+![Cloudflare Workers](https://img.shields.io/badge/Cloudflare_Workers-F38020?style=flat&logo=cloudflare&logoColor=white)
 
-**AI-powered growth analytics dashboard. Real-time platform metrics, historical trends, and streaming AI-generated growth insights.**
+**AI-powered growth analytics dashboard — streaming LLM reports, animated KPIs, 6-step onboarding wizard.**
 
-> A full-stack analytics dashboard that combines real-time platform metrics with AI-generated narrative reports. Engineered for speed — sub-2s dashboard load, sub-500ms queries — with streaming AI insights that arrive progressively.
-
----
+> Connects to your platform data, generates narrative AI growth reports via Server-Sent Events, and visualizes trends with animated charts and period-over-period comparisons. Built on Next.js 15 with a 6-step guided setup wizard and sub-2s dashboard load.
 
 ## Architecture
 
 ```
 Browser
-  │
-  ▼
-Next.js 15  (App Router · SSR · streaming)
-  │
-  ├── Growth Dashboard Page  (React Server Components + client charts)
-  │     ├── GrowthChart  (client component — Recharts / D3)
-  │     └── AI Insights Panel  (streaming — SSE)
-  │
-  └── API Routes
-        ├── GET /api/growth/metrics       → aggregated platform stats
-        ├── GET /api/growth/historical    → time-series query (cursor-paginated)
-        ├── GET /api/growth/compare       → period-over-period comparison
-        └── POST /api/growth/ai-report    → AI streaming report
-              │
-              └── AI SDK (LLM)  ←  prompt cache (5-min TTL)
+  └── Next.js 15 (RSC + edge API routes)
+        ├── LLM API (streaming SSE — reports arrive as generated)
+        │     └── Prompt cache (5-min TTL on system prompt + reference data)
+        └── Recharts (animated KPI counters, bar charts, trend lines)
 ```
-
----
 
 ## Tech Stack
 
-| Layer | Technology | Notes |
-|---|---|---|
-| Frontend | Next.js 15, App Router, React Server Components | Zero JS on initial render for above-the-fold |
-| Charts | Recharts / D3 | Client-hydrated only after initial RSC render |
-| AI | LLM API (streaming) | SSE |
-| Caching | LLM prompt caching + application TTL cache | 5-min prompt cache, 30s hot-read cache |
-| API | Next.js API Routes | Edge runtime |
-| Validation | Zod | All API payloads |
+| Layer | Technology |
+|-------|-----------|
+| Framework | Next.js 15 (App Router, edge runtime) |
+| AI | LLM API (Sonnet tier) with prompt caching |
+| Streaming | Server-Sent Events (SSE) |
+| Charts | Recharts — animated KPI counters, bar charts, trend lines |
+| Hosting | Cloudflare Workers (opennextjs-cloudflare) |
+| Language | TypeScript |
 
----
+## AI Integration
 
-## Features
+- **Extended prompt caching** — 5-min TTL on system prompt + reference data; reduces latency on repeat analysis
+- **Streaming SSE** — report lines arrive as the LLM generates them; no waiting for full response
+- **Retry with exponential backoff** on transient API errors
+- **Model: LLM (Sonnet tier)** — cost/quality balance optimized for analytics summaries
+- **Narrative insights** — AI generates prose interpretation, not just number tables
 
-### Metrics Dashboard
-- Platform growth metrics: followers, plays, likes, comments, shares — over time
-- Period-over-period comparison (week / month / quarter)
-- Audience breakdown by demographics and geography
-- Top-performing content ranked by engagement rate
-- Real-time updates on key metrics
+## Key Features
 
-### AI Report Generation
-- Narrative growth report generated from current metrics context
-- Identifies trends, anomalies, and opportunities with specific observations
-- Streamed progressively — first words appear in **~300ms**
-- Prompt-cached for repeat runs on unchanged data — ~5× faster, ~80% cheaper
-- Includes actionable recommendations calibrated to the specific numbers
-
-### Performance Benchmarks
-
-| Operation | Target | Achieved |
-|---|---|---|
-| Dashboard initial load | < 2s | **< 2s** |
-| Metric query | < 500ms | **< 500ms** |
-| Chart render | < 200ms | **< 200ms** |
-| AI first token (cached) | < 300ms | **~300ms** |
-
----
+- 6-step onboarding wizard with animated progress and AI-guided setup
+- Animated KPI counters and live chart previews on landing
+- Historical trends with cursor-paginated data queries
+- Period-over-period comparison (week/month/quarter)
+- Per-platform breakdown across major streaming and social platforms
+- Mobile-first layout with cinematic scroll effects
 
 ## Recent Additions
 
-- **Landing page hero** — ported MizzyTools 'Growth Report AI' hero with logo, proof chips, 15-section feature card, and dashboard preview
-- **Comprehensive UI overhaul** — animated KPI counters, live chart preview, particle glow background, hover animations, cinematic scroll effects, trust badge, mobile-first responsive layout
-- **6-step wizard** — T3–T6 fully wired (StepBrief, StepTemplate, StepGenerate, AI fab + onboarding tour), mobile-optimized with animated chart preview
-- **CF Workers integration** — defineCloudflareConfig for edge runtime alignment with francois-landing pattern
+- Full landing hero with animated KPI counters, particle glow background, and trust badges
+- Comprehensive UI overhaul — animated chart previews, cinematic scroll, hover animations
+- 6-step wizard: AI fab, onboarding tour, template picker, chart wiring, generate step with roadmap timeline
 
----
-
-## Security
-
-### API Key Handling
-- AI credentials are server-side environment variables — never exposed to client JavaScript or included in client bundles.
-- Edge runtime API routes — credentials exist only in the Cloudflare Workers execution context, not in any client-accessible resource.
-
-### Prompt Injection Prevention
-- User-controlled strings (metric labels, time ranges) are passed to AI as **structured data** with strict user/system role separation.
-- User input is never interpolated directly into the system prompt.
-- AI responses are rendered as plain text — no HTML injection surface.
-
-### Rate Limiting
-- AI report endpoint rate-limited per session — prevents prompt injection via rapid-fire requests.
-- Historical data queries validate date ranges and ownership before querying.
-
-### Data Handling
-- Metric ownership validated on every API request — users can only query their own data.
-- No raw SQL in the API layer — parameterized queries only.
-- No user data transmitted to the AI provider beyond the explicitly constructed report context.
-
----
-
-## Key Engineering Decisions
-
-### Streaming AI reports
-AI report generation uses Server-Sent Events (SSE) to stream tokens progressively. The dashboard is usable while the AI generates the narrative. First token in ~300ms; full report in 4–8 seconds.
-
-### Prompt caching for repeat runs
-Metrics context is passed as a cached prefix to the AI API. A second run on the same data hits the cache — ~5× faster and ~80% cheaper. Cache TTL is 5 minutes.
-
-### Separate query paths for real-time vs. historical
-Real-time metrics use a hot read path (application-level cache, 30s TTL). Historical time-series uses a cursor-paginated cold path with no cache — avoids cache pollution from infrequently accessed historical data.
-
-### RSC for initial data, client for interactivity
-The initial dashboard render is a React Server Component — zero client-side JS for above-the-fold metrics. Charts hydrate on the client only after the initial render. Achieves < 2s perceived load.
-
-### Cursor-paginated historical queries
-Historical time-series uses `created_at + id` composite cursors — not OFFSET. Stable under concurrent writes and consistent across paginated views.
-
----
-
-## AI Report API
-
-```http
-POST /api/growth/ai-report
-Content-Type: application/json
-
-{
-  "period": "last_30_days",
-  "metrics": {
-    "followers": { "current": 12400, "previous": 9800 },
-    "plays": { "current": 84200, "previous": 61000 },
-    "engagement_rate": { "current": 0.064, "previous": 0.058 }
-  }
-}
-```
-
-Response: `text/event-stream` — tokens streamed as `data: <token>` events.
-
----
-
-## License
-
-MIT — see [LICENSE](LICENSE)
-
----
-
-*Built by Frxncois — not open source.*
