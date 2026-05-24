@@ -5,7 +5,7 @@
 ![AI Powered](https://img.shields.io/badge/LLM_Powered-D97706?style=flat&logo=anthropic&logoColor=white)
 ![Cloudflare Workers](https://img.shields.io/badge/Cloudflare_Workers-F38020?style=flat&logo=cloudflare&logoColor=white)
 
-**AI-powered growth analytics dashboard — streaming LLM reports, animated KPIs, 6-step onboarding wizard.**
+**Intelligence-driven growth analytics dashboard — streaming LLM reports, animated KPIs, 6-step onboarding wizard.**
 
 > Connects to your platform data, generates narrative AI growth reports via Server-Sent Events, and visualizes trends with animated charts and period-over-period comparisons. Built on Next.js 15 with a 6-step guided setup wizard and sub-2s dashboard load.
 
