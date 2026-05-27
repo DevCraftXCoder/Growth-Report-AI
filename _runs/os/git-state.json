@@ -1,0 +1,16 @@
+{
+  "branch": "master",
+  "ahead": 0,
+  "behind": 0,
+  "dirty": true,
+  "uncommittedFiles": 1,
+  "recentCommits": [
+    {
+      "sha": "7dff8f8",
+      "subject": "Initial commit: Growth Report AI — AI-powered growth analytics dashboard",
+      "ts": "2026-04-20T21:52:05-04:00"
+    }
+  ],
+  "lastCommitTs": "2026-04-20T21:52:05-04:00",
+  "timestamp": "2026-04-21T01:52:09.101Z"
+}

@@ -150,8 +150,8 @@ function PreviousInsights({ insights }: { insights: AIInsight[] }) {
           </div>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.875rem', marginTop: '0.875rem' }}>
-            {insight.sections.map((section, i) => (
-              <div key={i}>
+            {insight.sections.map((section) => (
+              <div key={section.heading}>
                 <p
                   style={{
                     fontSize: 13,

@@ -50,8 +50,10 @@ export function DialogOverlay({ className }: { className?: string }) {
   if (!ctx.open) return null;
   return (
     <div
+      role="presentation"
       className={cn('fixed inset-0 z-50 bg-black/60 backdrop-blur-sm', className)}
       onClick={() => ctx.setOpen(false)}
+      onKeyDown={(e) => { if (e.key === 'Escape') ctx.setOpen(false); }}
     />
   );
 }

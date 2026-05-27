@@ -2,7 +2,8 @@
 
 import { motion } from 'framer-motion';
 import { useWizardState } from '@/lib/wizard/use-wizard-state';
-import { IndustryPill, INDUSTRIES } from '@/components/wizard/IndustryPill';
+import { IndustryPill } from '@/components/wizard/IndustryPill';
+import { INDUSTRIES } from '@/components/wizard/industries';
 import { LivePreview } from '@/components/wizard/LivePreview';
 import '@/styles/wizard.css';
 
